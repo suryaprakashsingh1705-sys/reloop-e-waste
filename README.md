@@ -1,45 +1,58 @@
-# ReLoop — E-Waste Recovery Platform
+# ReLoop — React + Vite MVP
 
-A responsive hackathon MVP for the WeMakeDevs Environmental Hacks, Waste & Energy track. ReLoop helps users log unused electronics, follow safer handling guidance, identify appropriate recovery routes, and track a device through a simple recovery workflow.
+ReLoop is a hackathon prototype for the WeMakeDevs Environmental Hacks, Waste & Energy track. It helps people log unused electronics, read safe-handling guidance, and track a device through a simple recovery workflow.
 
-## Current MVP features
+## Tech stack
 
-- Responsive dashboard and mobile layout
-- Add an e-waste device and create a recovery passport ID
-- Device categories, condition, approximate weight, notes, and status
-- Search and status filters
-- Status workflow: Logged → Ready for handover → Recovered
-- Browser-local persistence with `localStorage`
-- Estimated material weight based on entered or default weights (not a measured environmental impact)
-- Export recovery log to JSON
-- Safer disposal guidance and link to the Central Pollution Control Board website
-- Explicit disclaimer that demo entries and recovery options are not verified real-world recycler listings
+- React
+- Vite
+- CSS
+- Browser `localStorage` for prototype-only persistence
 
 ## Run locally
 
-This is currently a static front-end prototype and needs no build step or package installation.
+Requirements: Node.js and npm.
 
-1. Open `index.html` in a browser, or serve the folder using a local static server.
-2. All interactions work in the browser; recovery records are stored in that browser's local storage.
-3. Use the `Export recovery log` control to download your current entries.
+```bash
+npm install
+npm run dev
+```
 
-## Important demo integrity notes
+Open the local URL printed by Vite, usually `http://localhost:5173`.
 
-- The initial three entries are seeded examples. They are not real users, verified handovers, or verified environmental impact.
-- The weight metric sums entered/default device weights. It should be described as *estimated material weight logged*, not as confirmed waste diverted.
-- The current prototype does not use AI image recognition, a backend, a shared database, real pickup booking, or live recycler availability.
-- Before final judging, replace the sample records with a clearly explained live demo flow and add verified local recycling information if the team can validate it.
+## Production build
 
-## Hackathon requirements to address before submission
+```bash
+npm run build
+npm run preview
+```
 
-The event page states that prize eligibility requires either at least one qualifying AWS open-source tool or deployment on AWS. It also calls for a recorded three-minute demo video. This repository has not yet been deployed to AWS, and AWS integration is not yet implemented. Do not claim either until the team completes and verifies it.
+Vite outputs the production website into `dist/`.
 
-Suggested static hosting path: AWS Amplify Hosting. The owner of the AWS account must sign in, connect/upload this project, deploy it, and test the public URL. Never commit AWS keys or other secrets to this repository.
+## Current features
 
-## Suggested next build steps
+- Responsive dashboard
+- Add an e-waste item and create a recovery passport ID
+- Category, condition, estimated weight, notes, and status
+- Search and status filters
+- Status flow: Logged → Ready for handover → Recovered (confirmation required)
+- Browser-local persistence
+- Export recovery log as JSON
+- Safe handling guidance and official Haryana e-waste resource link
 
-1. Validate the user journey with the team and replace seed data with a deliberate demo script.
-2. Verify one or more authorized local e-waste collection routes from official sources; record source links and access dates.
-3. Add a backend/database if the judging demo needs shared, cross-device records.
-4. Deploy on AWS or integrate a qualifying AWS open-source project, then verify it actually runs.
-5. Record a three-minute demo: problem (20s), user flow (100s), AWS usage (20s), impact and limitations (20s).
+## Honest prototype limitations
+
+- Seed records are illustrative and are not real users or verified handovers.
+- The weight metric is an estimate of entered/logged material, not confirmed waste diversion or measured environmental impact.
+- This version has no backend, shared database, AI image recognition, real pickup booking, authentication, or live recycler availability.
+- The Sonipat facility entry may be dated. Verify current authorization, accepted items, hours, and pickup availability before visiting.
+- No AWS deployment has been completed by this repository. For hackathon prize eligibility, the event rules require a qualifying AWS open-source tool or AWS deployment. Do not claim either until completed and verified.
+
+## AWS Amplify Hosting
+
+For a Vite app, connect the GitHub repository to AWS Amplify. Build settings should use:
+
+- Build command: `npm run build`
+- Output directory: `dist`
+
+The account owner must sign in and authorize the connection. Never commit AWS credentials, access keys, or `.env` secrets.

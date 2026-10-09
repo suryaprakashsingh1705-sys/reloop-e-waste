@@ -38,13 +38,15 @@ Vite outputs the production website into `dist/`.
 - Status flow: Logged → Ready for handover → Recovered (confirmation required)
 - Browser-local persistence
 - Export recovery log as JSON
-- Safe handling guidance and official Haryana e-waste resource link
+- Interactive device-specific disposal guidance for phones, laptops, tablets, batteries, cables, and small appliances
+- Conditional safety warnings for battery or item damage
+- Official Haryana e-waste resource link
 
 ## Honest prototype limitations
 
 - Seed records are illustrative and are not real users or verified handovers.
 - The weight metric is an estimate of entered/logged material, not confirmed waste diversion or measured environmental impact.
-- This version has no backend, shared database, AI image recognition, real pickup booking, authentication, or live recycler availability.
+- This version has no backend, shared database, AI image recognition, real pickup booking, authentication, or live recycler availability. Device guidance is general information, not a substitute for manufacturer, local-authority, or specialist instructions.
 - The Sonipat facility entry may be dated. Verify current authorization, accepted items, hours, and pickup availability before visiting.
 - No AWS deployment has been completed by this repository. For hackathon prize eligibility, the event rules require a qualifying AWS open-source tool or AWS deployment. Do not claim either until completed and verified.
 

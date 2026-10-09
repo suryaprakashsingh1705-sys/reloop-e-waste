@@ -10,6 +10,15 @@ const demoItems = [
 ];
 const filters = [{ id: 'all', label: 'All' }, { id: 'logged', label: 'Logged' }, { id: 'ready', label: 'Ready' }, { id: 'recovered', label: 'Recovered' }];
 const statusLabels = { logged: 'Logged', ready: 'Ready for handover', recovered: 'Recovered' };
+const disposalGuides = {
+  Phone: { title: 'Phone or smartphone', steps: ['Back up important files, then sign out of accounts and remove SIM or memory cards.', 'Use the manufacturer reset process before giving the device away.', 'Keep the phone intact and use a suitable e-waste collection or take-back route.'] },
+  Laptop: { title: 'Laptop or computer', steps: ['Back up files, sign out, and securely erase personal data using the manufacturer’s guidance.', 'Remove accessories and chargers; do not dismantle the device unless qualified.', 'Ask a suitable recycler or manufacturer take-back program which computer items they accept.'] },
+  Tablet: { title: 'Tablet', steps: ['Back up files, sign out of accounts, and remove SIM or memory cards where applicable.', 'Reset the device using the manufacturer’s instructions.', 'Keep it intact and check acceptance with a suitable e-waste collection route.'] },
+  Battery: { title: 'Battery', steps: ['Do not puncture, crush, open, or place a battery in household waste.', 'If safe to do so and the terminals are exposed, prevent contact with metal objects; follow local collection instructions.', 'Use a collection point that explicitly accepts this battery type. Do not mail or transport a damaged battery without specialist instructions.'] },
+  'Cable / accessory': { title: 'Cables and accessories', steps: ['Separate cables, chargers, and small accessories from general rubbish.', 'Do not cut cables or dismantle chargers to recover materials.', 'Ask an e-waste recycler or an appropriate take-back scheme whether these accessories are accepted.'] },
+  'Small appliance': { title: 'Small electrical appliance', steps: ['Unplug the appliance and allow it to cool before handling.', 'Do not dismantle electrical components or built-in batteries yourself.', 'Check with a suitable e-waste collection channel whether the appliance is accepted.'] },
+  'Other electronics': { title: 'Other electronics', steps: ['Keep the item intact and note any built-in battery or hazardous component.', 'Do not dismantle, burn, or place electronics in regular household waste.', 'Contact a suitable e-waste collection channel to confirm the correct route before handing it over.'] },
+};
 const formatDate = (value) => {
   try { return new Intl.DateTimeFormat('en-IN', { day: 'numeric', month: 'short' }).format(new Date(value)); }
   catch { return 'Recently'; }
@@ -86,6 +95,8 @@ function App() {
   const [modalOpen, setModalOpen] = useState(false);
   const [toast, setToast] = useState('');
   const [showToast, setShowToast] = useState(false);
+  const [guideType, setGuideType] = useState('Phone');
+  const [guideCondition, setGuideCondition] = useState('Working');
 
   useEffect(() => {
     try { localStorage.setItem(STORAGE_KEY, JSON.stringify(items)); }
@@ -156,6 +167,22 @@ function App() {
         <div className="panel-foot"><span><span className="status-dot" /> Your list is saved in this browser</span><button className="plain-button" onClick={exportData}>Export recovery log ↗</button></div>
       </div>
       <aside className="right-column"><article className="guide-card" id="disposal-guide"><div className="guide-heading"><div><div className="eyebrow dark-eyebrow">QUICK GUIDE</div><h2>Before it leaves your hands.</h2></div><span className="guide-icon">✳</span></div><p className="guide-intro">A few safer habits can protect people and keep useful materials in circulation.</p>
+        <div className="disposal-selector">
+          <label htmlFor="guide-device-type">What are you disposing of?</label>
+          <select id="guide-device-type" value={guideType} onChange={(event) => setGuideType(event.target.value)}>
+            {Object.keys(disposalGuides).map((type) => <option key={type} value={type}>{type}</option>)}
+          </select>
+          <label htmlFor="guide-device-condition">Item condition</label>
+          <select id="guide-device-condition" value={guideCondition} onChange={(event) => setGuideCondition(event.target.value)}>
+            <option>Working</option><option>Not working</option><option>Damaged</option><option>Unsure</option>
+          </select>
+          <div className="device-guidance" aria-live="polite">
+            <h3>{disposalGuides[guideType].title}: next steps</h3>
+            <ol>{disposalGuides[guideType].steps.map((step) => <li key={step}>{step}</li>)}</ol>
+            {(guideType === 'Battery' || guideCondition === 'Damaged') && <div className="safety-alert"><strong>Safety first</strong><p>{guideType === 'Battery' ? 'If a battery is swollen, hot, leaking, or visibly damaged, do not charge, puncture, or handle it unnecessarily. Keep people away and seek advice from an appropriate specialist or local authority about safe handling and collection.' : 'If the item contains a swollen, hot, leaking, or damaged battery, do not charge or dismantle it. Avoid handling it unnecessarily and seek specialist advice.'}</p></div>}
+            <p className="guidance-disclaimer">General guidance only. Follow the product maker’s instructions and local collection rules. ReLoop does not verify a recycler or arrange pickup.</p>
+          </div>
+        </div>
         <div className="guide-step"><span className="step-number">01</span><div><strong>Back up & sign out</strong><p>Save your data, sign out of accounts, and remove SIM or memory cards where possible.</p></div></div><div className="guide-step"><span className="step-number">02</span><div><strong>Keep batteries intact</strong><p>Don't puncture, crush, or dismantle batteries. If swollen or damaged, avoid handling and seek specialist advice.</p></div></div><div className="guide-step"><span className="step-number">03</span><div><strong>Use a suitable channel</strong><p>Choose an authorized e-waste collection or recycling route. Don't put electronics in regular household bins.</p></div></div><div className="guide-note"><span>ⓘ</span><p>Guidance only. Follow local rules and the recycler's instructions for your specific item.</p></div></article>
         <article className="recovery-card" id="dropoff"><div className="recovery-top"><div><div className="eyebrow">NEXT STEP</div><h2>Find a recovery route.</h2></div><span className="recovery-pin">⌖</span></div><p>Look for authorized collection options before handing over a device.</p><div className="local-listing-label">PUBLICLY LISTED FACILITY · SONIPAT</div><div className="local-listing"><div className="local-listing-icon">⌖</div><div><strong>RBH E-Waste Recycle Hub Pvt. Ltd.</strong><span>HSIIDC, Raj Industrial Estate, Phase 1, Sonipat, Haryana</span><a href="https://www.greentribunal.gov.in/sites/default/files/news_updates/Report%20by%20HSPCB%20in%20EA%20No.%2004%20of%202024%20IN%20OA%20No.%20512%20of%202018%20%28Shailesh%20Singh%20Vs.%20Govt%20of%20Uttar%20Pradesh%20and%20Ors%29.pdf" target="_blank" rel="noreferrer">View public listing source ↗</a></div></div><div className="recovery-option"><div className="option-icon">⌂</div><div><strong>Brand take-back program</strong><span>Check the manufacturer's official website or service centre.</span></div><span className="option-arrow">↗</span></div><a className="recovery-link" href="https://hspcb.gov.in/page/e-waste" target="_blank" rel="noreferrer">Check Haryana e-waste resources <span>↗</span></a><div className="demo-disclaimer">This facility appears in a public Haryana recycler list, but the listing may be dated. Verify current CPCB registration, accepted device types, hours, and pickup availability before visiting. ReLoop does not arrange collection.</div></article></aside></section>
       <section className="how-section" id="how-it-works"><div className="how-heading"><div className="eyebrow dark-eyebrow">DESIGNED FOR ACTION</div><h2>Less guessing. More recovery.</h2><p>ReLoop turns a forgotten device into a trackable next step.</p></div><div className="how-grid"><article><span className="how-index">01</span><div className="how-icon">＋</div><h3>Log the device</h3><p>Record the type, condition, and approximate weight of electronics you no longer use.</p></article><article><span className="how-index">02</span><div className="how-icon">↗</div><h3>Choose a safe route</h3><p>Use the handling guide and verify an appropriate authorized collection channel.</p></article><article><span className="how-index">03</span><div className="how-icon">↻</div><h3>Track the outcome</h3><p>Update the status as the item is prepared, handed over, and responsibly recovered.</p></article></div></section>
